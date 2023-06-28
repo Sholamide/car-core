@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata = {
   title: 'Car Core',
-  description: 'Drive Smarter, Drive Connected.',
+  description: 'Driving Your Dreams, One Click at a Time',
 }
 
 export default function RootLayout({
