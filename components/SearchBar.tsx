@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import SearchManufacturer from "./SearchManufacturer";
 import { useState } from "react";
-import { SearchBarProps } from "@/types";
+import { useRouter } from "next/navigation";
+
+import SearchManufacturer from "./SearchManufacturer";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
   return (
@@ -18,27 +19,54 @@ const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
     </button>
   );
 };
-const SearchBar = ({ setManufacturer, setModel }: SearchBarProps) => {
-  const [searchManufacturer, setSearchManufacturer] = useState("");
-  const [searchModel, setSearchModel] = useState("");
+const SearchBar = () => {
+  const [manufacturer, setManuFacturer] = useState("");
+  const [model, setModel] = useState("");
+
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (searchManufacturer.trim() === "" && searchModel.trim() === "") {
+    if (manufacturer.trim() === "" && model.trim() === "") {
       return alert("Please provide some input");
     }
 
-    setModel(searchModel);
-    setManufacturer(searchManufacturer);
+    updateSearchParams(model.toLowerCase(), manufacturer.toLowerCase());
+  };
+
+  const updateSearchParams = (model: string, manufacturer: string) => {
+    // Create a new URLSearchParams object using the current URL search parameters
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Update or delete the 'model' search parameter based on the 'model' value
+    if (model) {
+      searchParams.set("model", model);
+    } else {
+      searchParams.delete("model");
+    }
+
+    // Update or delete the 'manufacturer' search parameter based on the 'manufacturer' value
+    if (manufacturer) {
+      searchParams.set("manufacturer", manufacturer);
+    } else {
+      searchParams.delete("manufacturer");
+    }
+
+    // Generate the new pathname with the updated search parameters
+    const newPathname = `${
+      window.location.pathname
+    }?${searchParams.toString()}`;
+
+    router.push(newPathname);
   };
 
   return (
     <form onSubmit={handleSearch} className="searchbar">
       <div className="searchbar__item">
         <SearchManufacturer
-          selected={searchManufacturer}
-          setSelected={setSearchManufacturer}
+          manufacturer={manufacturer}
+          setManuFacturer={setManuFacturer}
         />
         <SearchButton otherClasses="sm:hidden" />
       </div>
@@ -53,10 +81,10 @@ const SearchBar = ({ setManufacturer, setModel }: SearchBarProps) => {
         <input
           type="text"
           name="model"
-          value={searchModel}
-          onChange={(e) => setSearchModel(e.target.value)}
-          placeholder="Tiguan"
-          className=" searchbar__input"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          placeholder="Tiguan..."
+          className="searchbar__input"
         />
         <SearchButton otherClasses="sm:hidden" />
       </div>
