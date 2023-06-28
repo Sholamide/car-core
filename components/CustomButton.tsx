@@ -1,6 +1,6 @@
 "use client";
 
-import { ButtonProps } from "@/types";
+import { CustomButtonProps } from "@/types";
 import clsx from "clsx";
 import Image from "next/image";
 
@@ -11,7 +11,7 @@ const CustomButton = ({
   containerStyles,
   textStyles,
   rightIcon,
-}: ButtonProps) => {
+}: CustomButtonProps) => {
   return (
     <button
       type={btnType || "button"}
